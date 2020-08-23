@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
+using System.Text.Json;
+
 using WebApi.Helpers;
 using WebApi.Middleware;
 using WebApi.Services;
@@ -25,7 +29,12 @@ namespace WebApi
         {
             services.AddDbContext<DataContext>();
             services.AddCors();
-            services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
+            services.AddControllers().AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.IgnoreNullValues = true;
+                //x.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                //x.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            }) ;
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen();
 
@@ -61,6 +70,9 @@ namespace WebApi
 
             // custom jwt auth middleware
             app.UseMiddleware<JwtMiddleware>();
+
+            //logging middleware
+            app.UseMiddleware<LogMiddleWare>();
 
             app.UseEndpoints(x => x.MapControllers());
         }

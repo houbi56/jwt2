@@ -28,16 +28,16 @@ namespace WebApi.Controllers
         public ActionResult<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
             var response = _accountService.Authenticate(model, ipAddress());
-            setTokenCookie(response.RefreshToken);
+            //setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
         [HttpPost("refresh-token")]
-        public ActionResult<AuthenticateResponse> RefreshToken()
+        public ActionResult<AuthenticateResponse> RefreshToken(RefreshTokenRequest refreshToken)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
-            var response = _accountService.RefreshToken(refreshToken, ipAddress());
-            setTokenCookie(response.RefreshToken);
+            //var refreshToken = Request.Cookies["refreshToken"];
+            var response = _accountService.RefreshToken(refreshToken.RefreshToken, ipAddress());
+            //setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
@@ -63,7 +63,7 @@ namespace WebApi.Controllers
         public IActionResult Register(RegisterRequest model)
         {
             _accountService.Register(model, Request.Headers["origin"]);
-            return Ok(new { message = "Registration successful, please check your email for verification instructions" });
+            return Ok(new { message = "Registration successful" });
         }
 
         [HttpPost("verify-email")]
